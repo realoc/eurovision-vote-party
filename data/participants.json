@@ -1,0 +1,300 @@
+{
+	"participants": [
+		{
+			"country": "Albania",
+			"countryCode": "AL",
+			"act": {
+				"artist": "Shkodra Elektronike",
+				"song": "Zjerm"
+			}
+		},
+		{
+			"country": "Armenia",
+			"countryCode": "AM",
+			"act": {
+				"artist": "Parg",
+				"song": "Survivor"
+			}
+		},
+		{
+			"country": "Australia",
+			"countryCode": "AU",
+			"act": {
+				"artist": "Go-Jo",
+				"song": "Milkshake Man"
+			}
+		},
+		{
+			"country": "Austria",
+			"countryCode": "AT",
+			"act": {
+				"artist": "JJ",
+				"song": "Wasted Love"
+			}
+		},
+		{
+			"country": "Azerbaijan",
+			"countryCode": "AZ",
+			"act": {
+				"artist": "Mamagama",
+				"song": "Run With U"
+			}
+		},
+		{
+			"country": "Belgium",
+			"countryCode": "BE",
+			"act": {
+				"artist": "Red Sebastian",
+				"song": "Strobe Lights"
+			}
+		},
+		{
+			"country": "Croatia",
+			"countryCode": "HR",
+			"act": {
+				"artist": "Marko Bošnjak",
+				"song": "Poison Cake"
+			}
+		},
+		{
+			"country": "Cyprus",
+			"countryCode": "CY",
+			"act": {
+				"artist": "Theo Evan",
+				"song": "Shh"
+			}
+		},
+		{
+			"country": "Czechia",
+			"countryCode": "CZ",
+			"act": {
+				"artist": "Adonxs",
+				"song": "Kiss Kiss Goodbye"
+			}
+		},
+		{
+			"country": "Denmark",
+			"countryCode": "DK",
+			"act": {
+				"artist": "Sissal",
+				"song": "Hallucination"
+			}
+		},
+		{
+			"country": "Estonia",
+			"countryCode": "EE",
+			"act": {
+				"artist": "Tommy Cash",
+				"song": "Espresso macchiato"
+			}
+		},
+		{
+			"country": "Finland",
+			"countryCode": "FI",
+			"act": {
+				"artist": "Erika Vikman",
+				"song": "Ich komme"
+			}
+		},
+		{
+			"country": "France",
+			"countryCode": "FR",
+			"act": {
+				"artist": "Louane",
+				"song": "Maman"
+			}
+		},
+		{
+			"country": "Georgia",
+			"countryCode": "GE",
+			"act": {
+				"artist": "Mariam Shengelia",
+				"song": "Freedom"
+			}
+		},
+		{
+			"country": "Germany",
+			"countryCode": "DE",
+			"act": {
+				"artist": "Abor & Tynna",
+				"song": "Baller"
+			}
+		},
+		{
+			"country": "Greece",
+			"countryCode": "GR",
+			"act": {
+				"artist": "Klavdia",
+				"song": "Asteromata"
+			}
+		},
+		{
+			"country": "Iceland",
+			"countryCode": "IS",
+			"act": {
+				"artist": "Væb",
+				"song": "Róa"
+			}
+		},
+		{
+			"country": "Ireland",
+			"countryCode": "IE",
+			"act": {
+				"artist": "Emmy",
+				"song": "Laika Party"
+			}
+		},
+		{
+			"country": "Israel",
+			"countryCode": "IL",
+			"act": {
+				"artist": "Yuval Raphael",
+				"song": "New Day Will Rise"
+			}
+		},
+		{
+			"country": "Italy",
+			"countryCode": "IT",
+			"act": {
+				"artist": "Lucio Corsi",
+				"song": "Volevo essere un duro"
+			}
+		},
+		{
+			"country": "Latvia",
+			"countryCode": "LV",
+			"act": {
+				"artist": "Tautumeitas",
+				"song": "Bur man laimi"
+			}
+		},
+		{
+			"country": "Lithuania",
+			"countryCode": "LT",
+			"act": {
+				"artist": "Katarsis",
+				"song": "Tavo akys"
+			}
+		},
+		{
+			"country": "Luxembourg",
+			"countryCode": "LU",
+			"act": {
+				"artist": "Laura Thorn",
+				"song": "La poupée monte le son"
+			}
+		},
+		{
+			"country": "Malta",
+			"countryCode": "MT",
+			"act": {
+				"artist": "Miriana Conte",
+				"song": "Serving"
+			}
+		},
+		{
+			"country": "Montenegro",
+			"countryCode": "ME",
+			"act": {
+				"artist": "Nina Žižić",
+				"song": "Dobrodošli"
+			}
+		},
+		{
+			"country": "Netherlands",
+			"countryCode": "NL",
+			"act": {
+				"artist": "Claude",
+				"song": "C'est La Vie"
+			}
+		},
+		{
+			"country": "Norway",
+			"countryCode": "NO",
+			"act": {
+				"artist": "Kyle Alessandro",
+				"song": "Lighter"
+			}
+		},
+		{
+			"country": "Poland",
+			"countryCode": "PL",
+			"act": {
+				"artist": "Justyna Steczkowska",
+				"song": "Gaja"
+			}
+		},
+		{
+			"country": "Portugal",
+			"countryCode": "PT",
+			"act": {
+				"artist": "Napa",
+				"song": "Deslocado"
+			}
+		},
+		{
+			"country": "San Marino",
+			"countryCode": "SM",
+			"act": {
+				"artist": "Gabry Ponte",
+				"song": "Tutta l'Italia"
+			}
+		},
+		{
+			"country": "Serbia",
+			"countryCode": "RS",
+			"act": {
+				"artist": "Princ",
+				"song": "Mila"
+			}
+		},
+		{
+			"country": "Slovenia",
+			"countryCode": "SI",
+			"act": {
+				"artist": "Klemen",
+				"song": "How Much Time Do We Have Left"
+			}
+		},
+		{
+			"country": "Spain",
+			"countryCode": "ES",
+			"act": {
+				"artist": "Melody",
+				"song": "Esa diva"
+			}
+		},
+		{
+			"country": "Sweden",
+			"countryCode": "SE",
+			"act": {
+				"artist": "KAJ",
+				"song": "Bara bada bastu"
+			}
+		},
+		{
+			"country": "Switzerland",
+			"countryCode": "CH",
+			"act": {
+				"artist": "Zoë Më",
+				"song": "Voyage"
+			}
+		},
+		{
+			"country": "Ukraine",
+			"countryCode": "UA",
+			"act": {
+				"artist": "Ziferblat",
+				"song": "Bird of Pray"
+			}
+		},
+		{
+			"country": "United Kingdom",
+			"countryCode": "GB",
+			"act": {
+				"artist": "Remember Monday",
+				"song": "What The Hell Just Happened?"
+			}
+		}
+	]
+}
