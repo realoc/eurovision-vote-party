@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	handlers "eurovision-app/http-handlers"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -115,5 +114,3 @@ func TestPartyEndpoint(t *testing.T) {
 		t.Errorf("Password has unexpected length: got %d want 16", len(response.Password))
 	}
 }
-
-
