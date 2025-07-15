@@ -1,10 +1,10 @@
-import {MagnifyingGlassIcon, PlusCircledIcon} from "@radix-ui/react-icons";
-import {Box, Button, Flex, Text, TextField} from "@radix-ui/themes";
-import {useState} from "react";
-import {createParty} from "./api/partyClient";
+import { useState } from "react";
+import { createParty } from "@/api/partyClient.ts";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 function App() {
-  const [partyName, setPartyName] = useState("");
+  const [partyName, setPartyName] = useState<string>("");
   const [party, setParty] = useState<{ id: string; password: string } | null>(
     null,
   );
@@ -15,46 +15,31 @@ function App() {
   };
 
   return (
-    <Flex gap={"4"} direction={"column"}>
-      <Flex gap={"4"} direction={"row"} justify={"center"}>
-        <Box width="200" height="16">
-          <TextField.Root
-            id="party-name"
-            size={"2"}
-            placeholder="Enter party name ..."
-            value={partyName}
-            onChange={(e) => setPartyName(e.target.value)}
-            onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                (async () => {
-                  await handleCreateParty();
-                })();
-              }
-            }}
-          >
-            <TextField.Slot>
-              <MagnifyingGlassIcon height="16" width="16" />
-            </TextField.Slot>
-          </TextField.Root>
-        </Box>
-        <Box width={"64"} height={"16"}>
-          <Button onClick={handleCreateParty}>
-            <PlusCircledIcon />
-            Create Party
-          </Button>
-        </Box>
-      </Flex>
-      {party && (
-        <Flex gap={"4"} direction={"column"} align={"center"}>
-          <Box>
-            <Text as={"p"}>ID: {party.id}</Text>
-          </Box>
-          <Box>
-            <Text as={"p"}>Password: {party.password}</Text>
-          </Box>
-        </Flex>
-      )}
-    </Flex>
+    <div>
+      <div className="flex min-h-svh flex-col items-center justify-center">
+        <Input
+          id="party-name"
+          size={2}
+          placeholder="Enter party name ..."
+          value={partyName}
+          onChange={(e) => setPartyName(e.target.value)}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              (async () => {
+                await handleCreateParty();
+              })();
+            }
+          }}
+        />
+        <Button onClick={handleCreateParty}>Create Party</Button>
+        {party && (
+          <>
+            <p>Party ID: {party.id}</p>
+            <p>Party Password: {party.password}</p>
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 
