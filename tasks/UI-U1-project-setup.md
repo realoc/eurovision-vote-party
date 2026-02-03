@@ -1,18 +1,18 @@
 # U1: UI Project Setup
 
 ## Status
-- [ ] Not started
+- [x] Completed
 
 ## Dependencies
 None
 
 ## Tasks
-- [ ] Initialize Vite project with React + TypeScript template using pnpm
-- [ ] Configure Biome for linting/formatting
-- [ ] Configure Vitest for testing
-- [ ] Setup project structure: `components/`, `pages/`, `api/`, `hooks/`, `types/`
-- [ ] Add Tailwind CSS for styling
-- [ ] Add `.nvmrc` or `.node-version` for Node.js version
+- [x] Initialize Vite project with React + TypeScript template using pnpm
+- [x] Configure Biome for linting/formatting
+- [x] Configure Vitest for testing
+- [x] Setup project structure: `components/`, `pages/`, `api/`, `hooks/`, `types/`
+- [x] Add Tailwind CSS for styling
+- [x] Add `.nvmrc` or `.node-version` for Node.js version
 
 ## Details
 
