@@ -1,18 +1,18 @@
 # S4: Data Models
 
 ## Status
-- [ ] Not started
+- [x] Completed
 
 ## Dependencies
 - S1 (Project Setup)
 
 ## Tasks
-- [ ] Define Party model (id, name, code, event_type, admin_id, status, created_at)
-- [ ] Define Guest model (id, party_id, username, status: pending/approved/rejected)
-- [ ] Define Act model (id, country, artist, song, running_order, event_type)
-- [ ] Define Vote model (guest_id, party_id, votes: map[points]act_id)
-- [ ] Define User model (id, username, email)
-- [ ] Define VoteResult model for calculated results
+- [x] Define Party model (id, name, code, event_type, admin_id, status, created_at)
+- [x] Define Guest model (id, party_id, username, status: pending/approved/rejected)
+- [x] Define Act model (id, country, artist, song, running_order, event_type)
+- [x] Define Vote model (guest_id, party_id, votes: map[points]act_id)
+- [x] Define User model (id, username, email)
+- [x] Define VoteResult model for calculated results
 
 ## Details
 
