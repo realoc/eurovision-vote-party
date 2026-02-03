@@ -1,15 +1,15 @@
 # S3: Firebase Auth Integration
 
 ## Status
-- [ ] Not started
+- [x] Completed
 
 ## Dependencies
 - S2 (Docker & Firestore Setup)
 
 ## Tasks
-- [ ] Add Firebase Admin SDK for token verification
-- [ ] Create auth middleware for protected endpoints
-- [ ] Implement token validation logic
+- [x] Add Firebase Admin SDK for token verification
+- [x] Create auth middleware for protected endpoints
+- [x] Implement token validation logic
 
 ## Details
 
