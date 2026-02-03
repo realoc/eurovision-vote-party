@@ -1,0 +1,20 @@
+services:
+  firestore:
+    build:
+      context: .
+      dockerfile: Dockerfile.firebase-tools
+    container_name: firestore-emulator
+    command: >
+      sh -c "firebase emulators:start --only firestore --project ${FIREBASE_PROJECT_ID:-evp-local}"
+    environment:
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID:-evp-local}
+    working_dir: /firebase
+    volumes:
+      - ./firebase.json:/firebase/firebase.json:ro
+      - ./firestore.rules:/firebase/firestore.rules:ro
+      - ./firestore.indexes.json:/firebase/firestore.indexes.json:ro
+      - ./.firebaserc:/firebase/.firebaserc:ro
+    ports:
+      - "8081:8081"
+      - "4000:4000"
+    restart: unless-stopped
