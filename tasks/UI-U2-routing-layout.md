@@ -1,16 +1,16 @@
 # U2: Routing & Layout
 
 ## Status
-- [ ] Not started
+- [x] Completed
 
 ## Dependencies
 - U1 (Project Setup)
 
 ## Tasks
-- [ ] Install React Router
-- [ ] Create route structure for all pages
-- [ ] Create base layout component with navigation
-- [ ] Setup protected routes for admin pages
+- [x] Install React Router
+- [x] Create route structure for all pages
+- [x] Create base layout component with navigation
+- [x] Setup protected routes for admin pages
 
 ## Details
 
