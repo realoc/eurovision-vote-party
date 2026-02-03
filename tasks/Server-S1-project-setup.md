@@ -1,16 +1,16 @@
 # S1: Server Project Setup
 
 ## Status
-- [ ] Not started
+- [x] Completed
 
 ## Dependencies
 None
 
 ## Tasks
-- [ ] Initialize Go module (`go.mod`)
-- [ ] Create main.go with HTTP server using standard lib
-- [ ] Setup project structure: `handlers/`, `services/`, `persistence/`, `models/`
-- [ ] Add health check endpoint
+- [x] Initialize Go module (`go.mod`)
+- [x] Create main.go with HTTP server using standard lib
+- [x] Setup project structure: `handlers/`, `services/`, `persistence/`, `models/`
+- [x] Add health check endpoint
 
 ## Details
 

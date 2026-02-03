@@ -1,16 +1,16 @@
 # S2: Docker & Firestore Emulator Setup
 
 ## Status
-- [ ] Not started
+- [x] Completed
 
 ## Dependencies
 - S1 (Project Setup)
 
 ## Tasks
-- [ ] Create `docker-compose.yml` with Firestore emulator
-- [ ] Create Firestore config files (`firebase.json`, `.firebaserc`, `firestore.rules`, `firestore.indexes.json`)
-- [ ] Add scripts to start/stop emulator
-- [ ] Document local development setup
+- [x] Create `docker-compose.yml` with Firestore emulator
+- [x] Create Firestore config files (`firebase.json`, `.firebaserc`, `firestore.rules`, `firestore.indexes.json`)
+- [x] Add scripts to start/stop emulator
+- [x] Document local development setup
 
 ## Details
 
