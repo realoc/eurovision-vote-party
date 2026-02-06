@@ -6,6 +6,9 @@ import (
 	"time"
 )
 
+// ValidPointValues defines the Eurovision scoring system point values.
+var ValidPointValues = []int{12, 10, 8, 7, 6, 5, 4, 3, 2, 1}
+
 // Vote records the points a guest awards to acts during a party.
 type Vote struct {
 	ID        string         `firestore:"id" json:"id"`
@@ -23,16 +26,24 @@ func (v Vote) Validate() error {
 	if strings.TrimSpace(v.PartyID) == "" {
 		return fmt.Errorf("party id is required")
 	}
-	if len(v.Votes) == 0 {
-		return fmt.Errorf("at least one vote is required")
+	if len(v.Votes) != len(ValidPointValues) {
+		return fmt.Errorf("exactly %d votes required, got %d", len(ValidPointValues), len(v.Votes))
 	}
-	for points, actID := range v.Votes {
-		if points <= 0 {
-			return fmt.Errorf("points must be positive, got %d", points)
+	for _, points := range ValidPointValues {
+		actID, ok := v.Votes[points]
+		if !ok {
+			return fmt.Errorf("missing vote for point value %d", points)
 		}
 		if strings.TrimSpace(actID) == "" {
 			return fmt.Errorf("act id is required for points %d", points)
 		}
+	}
+	seen := make(map[string]bool, len(v.Votes))
+	for points, actID := range v.Votes {
+		if seen[actID] {
+			return fmt.Errorf("duplicate act id %q for points %d", actID, points)
+		}
+		seen[actID] = true
 	}
 	if v.CreatedAt.IsZero() {
 		return fmt.Errorf("created at timestamp is required")
