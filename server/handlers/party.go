@@ -226,3 +226,10 @@ func writeJSON(w http.ResponseWriter, status int, data any) {
 func writeError(w http.ResponseWriter, status int) {
 	http.Error(w, http.StatusText(status), status)
 }
+
+// writeJSONError writes a JSON error response with the given status code and message.
+func writeJSONError(w http.ResponseWriter, status int, message string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(map[string]string{"error": message})
+}

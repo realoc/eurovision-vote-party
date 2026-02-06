@@ -145,3 +145,78 @@ func TestAuthMiddlewareAllowsRequestWhenTokenValid(t *testing.T) {
 		t.Fatalf("expected token \"validtoken\", got %q", stub.receivedID)
 	}
 }
+
+func TestAuthMiddlewareExtractsEmailFromToken(t *testing.T) {
+	t.Cleanup(func() {
+		SetTokenVerifier(nil)
+	})
+
+	stub := &stubTokenVerifier{
+		token: &firebaseauth.Token{
+			UID: "user-123",
+			Claims: map[string]interface{}{
+				"email": "user@example.com",
+			},
+		},
+	}
+
+	SetTokenVerifier(stub)
+
+	var capturedEmail string
+	var emailFound bool
+
+	next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		capturedEmail, emailFound = UserEmailFromContext(r.Context())
+		w.WriteHeader(http.StatusOK)
+	})
+
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("Authorization", "Bearer validtoken")
+	rec := httptest.NewRecorder()
+
+	AuthMiddleware(next).ServeHTTP(rec, req)
+
+	if !emailFound {
+		t.Fatalf("expected email in context")
+	}
+
+	if capturedEmail != "user@example.com" {
+		t.Fatalf("expected email \"user@example.com\", got %q", capturedEmail)
+	}
+}
+
+func TestAuthMiddlewareHandsMissingEmailGracefully(t *testing.T) {
+	t.Cleanup(func() {
+		SetTokenVerifier(nil)
+	})
+
+	stub := &stubTokenVerifier{
+		token: &firebaseauth.Token{
+			UID: "user-123",
+			// No email claim
+		},
+	}
+
+	SetTokenVerifier(stub)
+
+	var emailFound bool
+
+	next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, emailFound = UserEmailFromContext(r.Context())
+		w.WriteHeader(http.StatusOK)
+	})
+
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("Authorization", "Bearer validtoken")
+	rec := httptest.NewRecorder()
+
+	AuthMiddleware(next).ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected status %d, got %d", http.StatusOK, rec.Code)
+	}
+
+	if emailFound {
+		t.Fatalf("expected no email in context when token has no email claim")
+	}
+}
