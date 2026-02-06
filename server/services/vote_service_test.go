@@ -20,6 +20,7 @@ type mockVoteDAO struct {
 	createFunc             func(ctx context.Context, vote *models.Vote) error
 	getByGuestAndPartyFunc func(ctx context.Context, guestID, partyID string) (*models.Vote, error)
 	updateFunc             func(ctx context.Context, vote *models.Vote) error
+	listByPartyIDFunc      func(ctx context.Context, partyID string) ([]*models.Vote, error)
 }
 
 func (m *mockVoteDAO) Create(ctx context.Context, vote *models.Vote) error {
@@ -43,9 +44,17 @@ func (m *mockVoteDAO) Update(ctx context.Context, vote *models.Vote) error {
 	return nil
 }
 
+func (m *mockVoteDAO) ListByPartyID(ctx context.Context, partyID string) ([]*models.Vote, error) {
+	if m.listByPartyIDFunc != nil {
+		return m.listByPartyIDFunc(ctx, partyID)
+	}
+	return nil, nil
+}
+
 // mockVotePartyDAO mocks the VotePartyDAO interface used by the vote service.
 type mockVotePartyDAO struct {
-	getByIDFunc func(ctx context.Context, id string) (*models.Party, error)
+	getByIDFunc      func(ctx context.Context, id string) (*models.Party, error)
+	updateStatusFunc func(ctx context.Context, id string, status models.PartyStatus) error
 }
 
 func (m *mockVotePartyDAO) GetByID(ctx context.Context, id string) (*models.Party, error) {
@@ -53,6 +62,13 @@ func (m *mockVotePartyDAO) GetByID(ctx context.Context, id string) (*models.Part
 		return m.getByIDFunc(ctx, id)
 	}
 	return nil, persistence.ErrNotFound
+}
+
+func (m *mockVotePartyDAO) UpdateStatus(ctx context.Context, id string, status models.PartyStatus) error {
+	if m.updateStatusFunc != nil {
+		return m.updateStatusFunc(ctx, id, status)
+	}
+	return nil
 }
 
 // mockVoteGuestDAO mocks the VoteGuestDAO interface used by the vote service.
@@ -1043,5 +1059,564 @@ func TestVoteService_UpdateVote(t *testing.T) {
 
 		assert.ErrorIs(t, err, services.ErrInvalidVotes)
 		assert.Nil(t, vote)
+	})
+}
+
+func TestVoteService_EndVoting(t *testing.T) {
+	t.Run("ends voting successfully", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusActive,
+			CreatedAt: time.Now(),
+		}
+
+		var updatedID string
+		var updatedStatus models.PartyStatus
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				if id == "party-1" {
+					return existingParty, nil
+				}
+				return nil, persistence.ErrNotFound
+			},
+			updateStatusFunc: func(ctx context.Context, id string, status models.PartyStatus) error {
+				updatedID = id
+				updatedStatus = status
+				return nil
+			},
+		}
+		voteDAO := &mockVoteDAO{}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		party, err := svc.EndVoting(ctx, "admin-1", "party-1")
+
+		require.NoError(t, err)
+		assert.Equal(t, "party-1", party.ID)
+		assert.Equal(t, models.PartyStatusClosed, party.Status)
+		assert.Equal(t, "party-1", updatedID)
+		assert.Equal(t, models.PartyStatusClosed, updatedStatus)
+	})
+
+	t.Run("returns ErrNotFound when party not found", func(t *testing.T) {
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return nil, persistence.ErrNotFound
+			},
+		}
+		voteDAO := &mockVoteDAO{}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		party, err := svc.EndVoting(ctx, "admin-1", "nonexistent")
+
+		assert.ErrorIs(t, err, services.ErrNotFound)
+		assert.Nil(t, party)
+	})
+
+	t.Run("returns ErrUnauthorized when adminID is empty", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusActive,
+			CreatedAt: time.Now(),
+		}
+
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return existingParty, nil
+			},
+		}
+		voteDAO := &mockVoteDAO{}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		party, err := svc.EndVoting(ctx, "", "party-1")
+
+		assert.ErrorIs(t, err, services.ErrUnauthorized)
+		assert.Nil(t, party)
+	})
+
+	t.Run("returns ErrUnauthorized when admin doesn't own party", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusActive,
+			CreatedAt: time.Now(),
+		}
+
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return existingParty, nil
+			},
+		}
+		voteDAO := &mockVoteDAO{}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		party, err := svc.EndVoting(ctx, "other-admin", "party-1")
+
+		assert.ErrorIs(t, err, services.ErrUnauthorized)
+		assert.Nil(t, party)
+	})
+
+	t.Run("returns ErrPartyClosed when party already closed", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusClosed,
+			CreatedAt: time.Now(),
+		}
+
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return existingParty, nil
+			},
+		}
+		voteDAO := &mockVoteDAO{}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		party, err := svc.EndVoting(ctx, "admin-1", "party-1")
+
+		assert.ErrorIs(t, err, services.ErrPartyClosed)
+		assert.Nil(t, party)
+	})
+
+	t.Run("propagates DAO UpdateStatus error", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusActive,
+			CreatedAt: time.Now(),
+		}
+
+		daoErr := errors.New("database connection lost")
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return existingParty, nil
+			},
+			updateStatusFunc: func(ctx context.Context, id string, status models.PartyStatus) error {
+				return daoErr
+			},
+		}
+		voteDAO := &mockVoteDAO{}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		party, err := svc.EndVoting(ctx, "admin-1", "party-1")
+
+		assert.ErrorIs(t, err, daoErr)
+		assert.Nil(t, party)
+	})
+}
+
+func TestVoteService_GetResults(t *testing.T) {
+	t.Run("returns results sorted by total points descending", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusClosed,
+			CreatedAt: time.Now(),
+		}
+
+		votes := []*models.Vote{
+			{
+				ID:        "vote-1",
+				GuestID:   "guest-1",
+				PartyID:   "party-1",
+				Votes:     validVotes(),
+				CreatedAt: time.Now(),
+			},
+		}
+
+		voteDAO := &mockVoteDAO{
+			listByPartyIDFunc: func(ctx context.Context, partyID string) ([]*models.Vote, error) {
+				return votes, nil
+			},
+		}
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return existingParty, nil
+			},
+		}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{
+			listActsFunc: func(eventType string) ([]models.Act, error) {
+				return testActs(), nil
+			},
+		}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		results, err := svc.GetResults(ctx, "admin-1", "party-1")
+
+		require.NoError(t, err)
+		assert.Equal(t, "party-1", results.PartyID)
+		assert.Equal(t, "Test Party", results.PartyName)
+		assert.Equal(t, 1, results.TotalVoters)
+		require.Len(t, results.Results, 10)
+
+		// Results should be sorted by total points descending
+		assert.Equal(t, 12, results.Results[0].TotalPoints)
+		assert.Equal(t, "act-1", results.Results[0].ActID)
+		assert.Equal(t, 1, results.Results[0].Rank)
+
+		assert.Equal(t, 10, results.Results[1].TotalPoints)
+		assert.Equal(t, "act-2", results.Results[1].ActID)
+		assert.Equal(t, 2, results.Results[1].Rank)
+
+		assert.Equal(t, 1, results.Results[9].TotalPoints)
+		assert.Equal(t, "act-10", results.Results[9].ActID)
+		assert.Equal(t, 10, results.Results[9].Rank)
+	})
+
+	t.Run("handles ties with standard competition ranking", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusClosed,
+			CreatedAt: time.Now(),
+		}
+
+		// Two voters: guest-1 gives 12 to act-1, guest-2 gives 12 to act-2
+		// This makes act-1 and act-2 tie at 22 points each (12+10 and 12+10)
+		votes := []*models.Vote{
+			{
+				ID:      "vote-1",
+				GuestID: "guest-1",
+				PartyID: "party-1",
+				Votes: map[int]string{
+					12: "act-1",
+					10: "act-2",
+					8:  "act-3",
+					7:  "act-4",
+					6:  "act-5",
+					5:  "act-6",
+					4:  "act-7",
+					3:  "act-8",
+					2:  "act-9",
+					1:  "act-10",
+				},
+				CreatedAt: time.Now(),
+			},
+			{
+				ID:      "vote-2",
+				GuestID: "guest-2",
+				PartyID: "party-1",
+				Votes: map[int]string{
+					12: "act-2",
+					10: "act-1",
+					8:  "act-3",
+					7:  "act-4",
+					6:  "act-5",
+					5:  "act-6",
+					4:  "act-7",
+					3:  "act-8",
+					2:  "act-9",
+					1:  "act-10",
+				},
+				CreatedAt: time.Now(),
+			},
+		}
+
+		voteDAO := &mockVoteDAO{
+			listByPartyIDFunc: func(ctx context.Context, partyID string) ([]*models.Vote, error) {
+				return votes, nil
+			},
+		}
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return existingParty, nil
+			},
+		}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{
+			listActsFunc: func(eventType string) ([]models.Act, error) {
+				return testActs(), nil
+			},
+		}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		results, err := svc.GetResults(ctx, "admin-1", "party-1")
+
+		require.NoError(t, err)
+		assert.Equal(t, 2, results.TotalVoters)
+		require.Len(t, results.Results, 10)
+
+		// act-1 and act-2 both have 22 points (12+10), tied at rank 1
+		assert.Equal(t, 22, results.Results[0].TotalPoints)
+		assert.Equal(t, 1, results.Results[0].Rank)
+		assert.Equal(t, 22, results.Results[1].TotalPoints)
+		assert.Equal(t, 1, results.Results[1].Rank)
+
+		// act-3 has 16 points (8+8), should be rank 3 (standard competition ranking: 1,1,3)
+		assert.Equal(t, 16, results.Results[2].TotalPoints)
+		assert.Equal(t, 3, results.Results[2].Rank)
+	})
+
+	t.Run("includes acts with 0 points", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusClosed,
+			CreatedAt: time.Now(),
+		}
+
+		// No votes at all
+		voteDAO := &mockVoteDAO{
+			listByPartyIDFunc: func(ctx context.Context, partyID string) ([]*models.Vote, error) {
+				return []*models.Vote{}, nil
+			},
+		}
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return existingParty, nil
+			},
+		}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{
+			listActsFunc: func(eventType string) ([]models.Act, error) {
+				return testActs(), nil
+			},
+		}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		results, err := svc.GetResults(ctx, "admin-1", "party-1")
+
+		require.NoError(t, err)
+		assert.Equal(t, 0, results.TotalVoters)
+		require.Len(t, results.Results, 10)
+
+		// All acts should have 0 points
+		for _, result := range results.Results {
+			assert.Equal(t, 0, result.TotalPoints)
+		}
+	})
+
+	t.Run("returns ErrNotFound when party not found", func(t *testing.T) {
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return nil, persistence.ErrNotFound
+			},
+		}
+		voteDAO := &mockVoteDAO{}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		results, err := svc.GetResults(ctx, "admin-1", "nonexistent")
+
+		assert.ErrorIs(t, err, services.ErrNotFound)
+		assert.Nil(t, results)
+	})
+
+	t.Run("returns ErrVotingNotEnded when party is still active", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusActive,
+			CreatedAt: time.Now(),
+		}
+
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return existingParty, nil
+			},
+		}
+		voteDAO := &mockVoteDAO{}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		results, err := svc.GetResults(ctx, "admin-1", "party-1")
+
+		assert.ErrorIs(t, err, services.ErrVotingNotEnded)
+		assert.Nil(t, results)
+	})
+
+	t.Run("returns ErrUnauthorized when admin doesn't own party", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusClosed,
+			CreatedAt: time.Now(),
+		}
+
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return existingParty, nil
+			},
+		}
+		voteDAO := &mockVoteDAO{}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		results, err := svc.GetResults(ctx, "other-admin", "party-1")
+
+		assert.ErrorIs(t, err, services.ErrUnauthorized)
+		assert.Nil(t, results)
+	})
+
+	t.Run("returns correct totalVoters count", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusClosed,
+			CreatedAt: time.Now(),
+		}
+
+		votes := []*models.Vote{
+			{
+				ID:        "vote-1",
+				GuestID:   "guest-1",
+				PartyID:   "party-1",
+				Votes:     validVotes(),
+				CreatedAt: time.Now(),
+			},
+			{
+				ID:        "vote-2",
+				GuestID:   "guest-2",
+				PartyID:   "party-1",
+				Votes:     validVotes(),
+				CreatedAt: time.Now(),
+			},
+			{
+				ID:        "vote-3",
+				GuestID:   "guest-3",
+				PartyID:   "party-1",
+				Votes:     validVotes(),
+				CreatedAt: time.Now(),
+			},
+		}
+
+		voteDAO := &mockVoteDAO{
+			listByPartyIDFunc: func(ctx context.Context, partyID string) ([]*models.Vote, error) {
+				return votes, nil
+			},
+		}
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return existingParty, nil
+			},
+		}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{
+			listActsFunc: func(eventType string) ([]models.Act, error) {
+				return testActs(), nil
+			},
+		}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		results, err := svc.GetResults(ctx, "admin-1", "party-1")
+
+		require.NoError(t, err)
+		assert.Equal(t, 3, results.TotalVoters)
+	})
+
+	t.Run("works without admin auth", func(t *testing.T) {
+		existingParty := &models.Party{
+			ID:        "party-1",
+			Name:      "Test Party",
+			Code:      "ABC123",
+			EventType: models.EventGrandFinal,
+			AdminID:   "admin-1",
+			Status:    models.PartyStatusClosed,
+			CreatedAt: time.Now(),
+		}
+
+		voteDAO := &mockVoteDAO{
+			listByPartyIDFunc: func(ctx context.Context, partyID string) ([]*models.Vote, error) {
+				return []*models.Vote{}, nil
+			},
+		}
+		partyDAO := &mockVotePartyDAO{
+			getByIDFunc: func(ctx context.Context, id string) (*models.Party, error) {
+				return existingParty, nil
+			},
+		}
+		guestDAO := &mockVoteGuestDAO{}
+		actsService := &mockVoteActsService{
+			listActsFunc: func(eventType string) ([]models.Act, error) {
+				return testActs(), nil
+			},
+		}
+
+		svc := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+		ctx := context.Background()
+
+		// Empty adminID should be allowed (optional auth)
+		results, err := svc.GetResults(ctx, "", "party-1")
+
+		require.NoError(t, err)
+		assert.Equal(t, "party-1", results.PartyID)
+		assert.Equal(t, "Test Party", results.PartyName)
+		require.Len(t, results.Results, 10)
 	})
 }

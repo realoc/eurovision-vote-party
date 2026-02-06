@@ -11,4 +11,5 @@ var (
 	ErrPartyClosed       = errors.New("party is not active")
 	ErrVoteAlreadyExists = errors.New("vote already exists")
 	ErrInvalidVotes      = errors.New("invalid votes")
+	ErrVotingNotEnded    = errors.New("voting has not ended")
 )

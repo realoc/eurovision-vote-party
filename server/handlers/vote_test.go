@@ -21,6 +21,8 @@ type mockVoteService struct {
 	submitVoteFunc func(ctx context.Context, adminID, partyID string, req services.SubmitVoteRequest) (*models.Vote, error)
 	getVotesFunc   func(ctx context.Context, adminID, partyID, guestID string) (*models.Vote, error)
 	updateVoteFunc func(ctx context.Context, adminID, partyID string, req services.SubmitVoteRequest) (*models.Vote, error)
+	endVotingFunc  func(ctx context.Context, adminID, partyID string) (*models.Party, error)
+	getResultsFunc func(ctx context.Context, adminID, partyID string) (*services.PartyResults, error)
 }
 
 func (m *mockVoteService) SubmitVote(ctx context.Context, adminID, partyID string, req services.SubmitVoteRequest) (*models.Vote, error) {
@@ -40,6 +42,20 @@ func (m *mockVoteService) GetVotes(ctx context.Context, adminID, partyID, guestI
 func (m *mockVoteService) UpdateVote(ctx context.Context, adminID, partyID string, req services.SubmitVoteRequest) (*models.Vote, error) {
 	if m.updateVoteFunc != nil {
 		return m.updateVoteFunc(ctx, adminID, partyID, req)
+	}
+	return nil, nil
+}
+
+func (m *mockVoteService) EndVoting(ctx context.Context, adminID, partyID string) (*models.Party, error) {
+	if m.endVotingFunc != nil {
+		return m.endVotingFunc(ctx, adminID, partyID)
+	}
+	return nil, nil
+}
+
+func (m *mockVoteService) GetResults(ctx context.Context, adminID, partyID string) (*services.PartyResults, error) {
+	if m.getResultsFunc != nil {
+		return m.getResultsFunc(ctx, adminID, partyID)
 	}
 	return nil, nil
 }
@@ -496,4 +512,216 @@ func TestVoteHandler_ReturnsMethodNotAllowedForUnsupportedMethod(t *testing.T) {
 	handler.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusMethodNotAllowed, rec.Code)
+}
+
+// --- EndVoting Tests ---
+
+func TestVoteHandler_EndVoting_ReturnsOKOnSuccess(t *testing.T) {
+	svc := &mockVoteService{
+		endVotingFunc: func(ctx context.Context, adminID, partyID string) (*models.Party, error) {
+			assert.Equal(t, "admin-1", adminID)
+			assert.Equal(t, "party-1", partyID)
+			return &models.Party{
+				ID:     "party-1",
+				Status: models.PartyStatusClosed,
+			}, nil
+		},
+	}
+
+	handler := handlers.NewVoteHandler(svc)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/parties/party-1/end-voting", nil)
+	req = requestWithUserID(req, "admin-1")
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
+
+	var response map[string]interface{}
+	err := json.Unmarshal(rec.Body.Bytes(), &response)
+	require.NoError(t, err)
+	assert.Equal(t, "party-1", response["id"])
+	assert.Equal(t, "closed", response["status"])
+}
+
+func TestVoteHandler_EndVoting_ReturnsUnauthorizedWhenNoAuth(t *testing.T) {
+	handler := handlers.NewVoteHandler(&mockVoteService{})
+
+	req := httptest.NewRequest(http.MethodPost, "/api/parties/party-1/end-voting", nil)
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusUnauthorized, rec.Code)
+}
+
+func TestVoteHandler_EndVoting_ReturnsForbiddenWhenUnauthorized(t *testing.T) {
+	svc := &mockVoteService{
+		endVotingFunc: func(ctx context.Context, adminID, partyID string) (*models.Party, error) {
+			return nil, services.ErrUnauthorized
+		},
+	}
+
+	handler := handlers.NewVoteHandler(svc)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/parties/party-1/end-voting", nil)
+	req = requestWithUserID(req, "other-user")
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusForbidden, rec.Code)
+}
+
+func TestVoteHandler_EndVoting_ReturnsForbiddenWhenPartyClosed(t *testing.T) {
+	svc := &mockVoteService{
+		endVotingFunc: func(ctx context.Context, adminID, partyID string) (*models.Party, error) {
+			return nil, services.ErrPartyClosed
+		},
+	}
+
+	handler := handlers.NewVoteHandler(svc)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/parties/party-1/end-voting", nil)
+	req = requestWithUserID(req, "admin-1")
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusForbidden, rec.Code)
+}
+
+func TestVoteHandler_EndVoting_ReturnsNotFoundWhenPartyNotFound(t *testing.T) {
+	svc := &mockVoteService{
+		endVotingFunc: func(ctx context.Context, adminID, partyID string) (*models.Party, error) {
+			return nil, services.ErrNotFound
+		},
+	}
+
+	handler := handlers.NewVoteHandler(svc)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/parties/party-1/end-voting", nil)
+	req = requestWithUserID(req, "admin-1")
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusNotFound, rec.Code)
+}
+
+func TestVoteHandler_EndVoting_ReturnsMethodNotAllowedForWrongMethod(t *testing.T) {
+	handler := handlers.NewVoteHandler(&mockVoteService{})
+
+	req := httptest.NewRequest(http.MethodGet, "/api/parties/party-1/end-voting", nil)
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusMethodNotAllowed, rec.Code)
+}
+
+// --- GetResults Tests ---
+
+func TestVoteHandler_GetResults_ReturnsOKWithResults(t *testing.T) {
+	svc := &mockVoteService{
+		getResultsFunc: func(ctx context.Context, adminID, partyID string) (*services.PartyResults, error) {
+			assert.Equal(t, "party-1", partyID)
+			return &services.PartyResults{
+				PartyID:     "party-1",
+				PartyName:   "Test Party",
+				TotalVoters: 2,
+				Results: []models.VoteResult{
+					{
+						ActID:       "act-1",
+						Country:     "Country 1",
+						Artist:      "Artist 1",
+						Song:        "Song 1",
+						TotalPoints: 24,
+						Rank:        1,
+					},
+				},
+			}, nil
+		},
+	}
+
+	handler := handlers.NewVoteHandler(svc)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/parties/party-1/results", nil)
+	req = requestWithUserID(req, "admin-1")
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
+
+	var response services.PartyResults
+	err := json.Unmarshal(rec.Body.Bytes(), &response)
+	require.NoError(t, err)
+	assert.Equal(t, "party-1", response.PartyID)
+	assert.Equal(t, "Test Party", response.PartyName)
+	assert.Equal(t, 2, response.TotalVoters)
+	require.Len(t, response.Results, 1)
+	assert.Equal(t, "act-1", response.Results[0].ActID)
+	assert.Equal(t, "Country 1", response.Results[0].Country)
+	assert.Equal(t, "Artist 1", response.Results[0].Artist)
+	assert.Equal(t, "Song 1", response.Results[0].Song)
+	assert.Equal(t, 24, response.Results[0].TotalPoints)
+	assert.Equal(t, 1, response.Results[0].Rank)
+}
+
+func TestVoteHandler_GetResults_ReturnsForbiddenWhenVotingNotEnded(t *testing.T) {
+	svc := &mockVoteService{
+		getResultsFunc: func(ctx context.Context, adminID, partyID string) (*services.PartyResults, error) {
+			return nil, services.ErrVotingNotEnded
+		},
+	}
+
+	handler := handlers.NewVoteHandler(svc)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/parties/party-1/results", nil)
+	req = requestWithUserID(req, "admin-1")
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusForbidden, rec.Code)
+}
+
+func TestVoteHandler_GetResults_ReturnsNotFoundWhenPartyNotFound(t *testing.T) {
+	svc := &mockVoteService{
+		getResultsFunc: func(ctx context.Context, adminID, partyID string) (*services.PartyResults, error) {
+			return nil, services.ErrNotFound
+		},
+	}
+
+	handler := handlers.NewVoteHandler(svc)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/parties/party-1/results", nil)
+	req = requestWithUserID(req, "admin-1")
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusNotFound, rec.Code)
+}
+
+func TestVoteHandler_GetResults_ReturnsForbiddenWhenUnauthorized(t *testing.T) {
+	svc := &mockVoteService{
+		getResultsFunc: func(ctx context.Context, adminID, partyID string) (*services.PartyResults, error) {
+			return nil, services.ErrUnauthorized
+		},
+	}
+
+	handler := handlers.NewVoteHandler(svc)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/parties/party-1/results", nil)
+	req = requestWithUserID(req, "other-user")
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusForbidden, rec.Code)
 }
