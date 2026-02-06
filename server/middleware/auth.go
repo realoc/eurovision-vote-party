@@ -77,3 +77,47 @@ func UserIDFromContext(ctx context.Context) (string, bool) {
 	uid, ok := ctx.Value(userIDContextKey).(string)
 	return uid, ok
 }
+
+// OptionalAuthMiddleware extracts the user ID from the Authorization header if present.
+// Unlike AuthMiddleware, it does not block requests without valid auth - it simply
+// passes them through without a user ID in the context.
+func OptionalAuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if next == nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
+		}
+
+		if verifier == nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		authorization := r.Header.Get("Authorization")
+		if authorization == "" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		parts := strings.SplitN(authorization, " ", 2)
+		if len(parts) != 2 || !strings.EqualFold(parts[0], "Bearer") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		token := strings.TrimSpace(parts[1])
+		if token == "" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		verifiedToken, err := verifier.VerifyIDToken(r.Context(), token)
+		if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		ctxWithUID := context.WithValue(r.Context(), userIDContextKey, verifiedToken.UID)
+		next.ServeHTTP(w, r.WithContext(ctxWithUID))
+	})
+}
