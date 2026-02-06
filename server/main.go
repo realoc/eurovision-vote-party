@@ -36,9 +36,19 @@ func main() {
 	}
 	actsHandler := handlers.NewActsHandler(actsService)
 
+	voteDAO := persistence.NewFirestoreVoteDAO(firestoreClient)
+	voteService := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
+	voteHandler := handlers.NewVoteHandler(voteService)
+
 	apiHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := strings.TrimPrefix(r.URL.Path, "/api/parties/")
-		if strings.Contains(path, "/") {
+		segments := strings.SplitN(path, "/", 3)
+		if len(segments) >= 2 {
+			switch segments[1] {
+			case "votes":
+				voteHandler.ServeHTTP(w, r)
+				return
+			}
 			guestHandler.ServeHTTP(w, r)
 			return
 		}
