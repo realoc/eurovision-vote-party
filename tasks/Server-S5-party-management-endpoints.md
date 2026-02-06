@@ -1,18 +1,18 @@
 # S5: Party Management Endpoints
 
 ## Status
-- [ ] Not started
+- [x] Complete
 
 ## Dependencies
 - S3 (Firebase Auth Integration)
 - S4 (Data Models)
 
 ## Tasks
-- [ ] `POST /api/parties` - Create party (admin only, returns party code)
-- [ ] `GET /api/parties` - List admin's parties
-- [ ] `GET /api/parties/:code` - Get party by code (for guests)
-- [ ] `GET /api/parties/:id` - Get party details (for admin)
-- [ ] `DELETE /api/parties/:id` - Delete party (admin only)
+- [x] `POST /api/parties` - Create party (admin only, returns party code)
+- [x] `GET /api/parties` - List admin's parties
+- [x] `GET /api/parties/:code` - Get party by code (for guests)
+- [x] `GET /api/parties/:id` - Get party details (for admin)
+- [x] `DELETE /api/parties/:id` - Delete party (admin only)
 
 ## Details
 
