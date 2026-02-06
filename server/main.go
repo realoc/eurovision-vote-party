@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go/v4"
@@ -25,10 +26,23 @@ func main() {
 	partyService := services.NewPartyService(partyDAO)
 	partyHandler := handlers.NewPartyHandler(partyService)
 
+	guestDAO := persistence.NewFirestoreGuestDAO(firestoreClient)
+	guestService := services.NewGuestService(guestDAO, partyDAO)
+	guestHandler := handlers.NewGuestHandler(guestService)
+
+	apiHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := strings.TrimPrefix(r.URL.Path, "/api/parties/")
+		if strings.Contains(path, "/") {
+			guestHandler.ServeHTTP(w, r)
+			return
+		}
+		partyHandler.ServeHTTP(w, r)
+	})
+
 	mux := http.NewServeMux()
 	mux.Handle("/api/health", handlers.NewHealthHandler())
 	mux.Handle("/api/parties", middleware.AuthMiddleware(partyHandler))
-	mux.Handle("/api/parties/", middleware.OptionalAuthMiddleware(partyHandler))
+	mux.Handle("/api/parties/", middleware.OptionalAuthMiddleware(apiHandler))
 
 	server := &http.Server{
 		Addr:    ":8080",
