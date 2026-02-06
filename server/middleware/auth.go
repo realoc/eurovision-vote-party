@@ -19,6 +19,8 @@ type contextKey string
 const (
 	// userIDContextKey stores the Firebase user ID extracted from a verified token.
 	userIDContextKey contextKey = "middleware/firebaseUserID"
+	// userEmailContextKey stores the email extracted from a verified token.
+	userEmailContextKey contextKey = "middleware/firebaseUserEmail"
 )
 
 var verifier tokenVerifier
@@ -67,8 +69,11 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		ctxWithUID := context.WithValue(r.Context(), userIDContextKey, verifiedToken.UID)
-		next.ServeHTTP(w, r.WithContext(ctxWithUID))
+		ctx := context.WithValue(r.Context(), userIDContextKey, verifiedToken.UID)
+		if email, ok := verifiedToken.Claims["email"].(string); ok {
+			ctx = context.WithValue(ctx, userEmailContextKey, email)
+		}
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
@@ -76,6 +81,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 func UserIDFromContext(ctx context.Context) (string, bool) {
 	uid, ok := ctx.Value(userIDContextKey).(string)
 	return uid, ok
+}
+
+// UserEmailFromContext extracts the email from the request context.
+func UserEmailFromContext(ctx context.Context) (string, bool) {
+	email, ok := ctx.Value(userEmailContextKey).(string)
+	return email, ok
 }
 
 // OptionalAuthMiddleware extracts the user ID from the Authorization header if present.
@@ -117,7 +128,10 @@ func OptionalAuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		ctxWithUID := context.WithValue(r.Context(), userIDContextKey, verifiedToken.UID)
-		next.ServeHTTP(w, r.WithContext(ctxWithUID))
+		ctx := context.WithValue(r.Context(), userIDContextKey, verifiedToken.UID)
+		if email, ok := verifiedToken.Claims["email"].(string); ok {
+			ctx = context.WithValue(ctx, userEmailContextKey, email)
+		}
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

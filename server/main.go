@@ -40,6 +40,10 @@ func main() {
 	voteService := services.NewVoteService(voteDAO, partyDAO, guestDAO, actsService)
 	voteHandler := handlers.NewVoteHandler(voteService)
 
+	userDAO := persistence.NewFirestoreUserDAO(firestoreClient)
+	userService := services.NewUserService(userDAO)
+	userHandler := handlers.NewUserHandler(userService)
+
 	apiHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := strings.TrimPrefix(r.URL.Path, "/api/parties/")
 		segments := strings.SplitN(path, "/", 3)
@@ -60,6 +64,7 @@ func main() {
 	mux.Handle("/api/acts", actsHandler)
 	mux.Handle("/api/parties", middleware.AuthMiddleware(partyHandler))
 	mux.Handle("/api/parties/", middleware.OptionalAuthMiddleware(apiHandler))
+	mux.Handle("/api/users/profile", middleware.AuthMiddleware(userHandler))
 
 	server := &http.Server{
 		Addr:    ":8080",
