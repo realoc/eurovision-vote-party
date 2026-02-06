@@ -30,6 +30,12 @@ func main() {
 	guestService := services.NewGuestService(guestDAO, partyDAO)
 	guestHandler := handlers.NewGuestHandler(guestService)
 
+	actsService, err := services.NewActsService("data/acts.json")
+	if err != nil {
+		log.Fatalf("failed to load acts data: %v", err)
+	}
+	actsHandler := handlers.NewActsHandler(actsService)
+
 	apiHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := strings.TrimPrefix(r.URL.Path, "/api/parties/")
 		if strings.Contains(path, "/") {
@@ -41,6 +47,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.Handle("/api/health", handlers.NewHealthHandler())
+	mux.Handle("/api/acts", actsHandler)
 	mux.Handle("/api/parties", middleware.AuthMiddleware(partyHandler))
 	mux.Handle("/api/parties/", middleware.OptionalAuthMiddleware(apiHandler))
 

@@ -1,0 +1,460 @@
+{
+  "acts": [
+    {
+      "id": "is-2025",
+      "country": "Iceland",
+      "artist": "VÆB",
+      "song": "Róa",
+      "runningOrder": 1,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "pl-2025",
+      "country": "Poland",
+      "artist": "Justyna Steczkowska",
+      "song": "Gaja",
+      "runningOrder": 2,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "si-2025",
+      "country": "Slovenia",
+      "artist": "Klemen",
+      "song": "How Much Time Do We Have Left",
+      "runningOrder": 3,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "ee-2025",
+      "country": "Estonia",
+      "artist": "Tommy Cash",
+      "song": "Espresso Macchiato",
+      "runningOrder": 4,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "ua-2025",
+      "country": "Ukraine",
+      "artist": "Ziferblat",
+      "song": "Bird of Pray",
+      "runningOrder": 5,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "se-2025",
+      "country": "Sweden",
+      "artist": "KAJ",
+      "song": "Bara Bada Bastu",
+      "runningOrder": 6,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "pt-2025",
+      "country": "Portugal",
+      "artist": "NAPA",
+      "song": "Deslocado",
+      "runningOrder": 7,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "no-2025",
+      "country": "Norway",
+      "artist": "Kyle Alessandro",
+      "song": "Lighter",
+      "runningOrder": 8,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "be-2025",
+      "country": "Belgium",
+      "artist": "Red Sebastian",
+      "song": "Strobe Lights",
+      "runningOrder": 9,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "az-2025",
+      "country": "Azerbaijan",
+      "artist": "Mamagama",
+      "song": "Run With U",
+      "runningOrder": 10,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "sm-2025",
+      "country": "San Marino",
+      "artist": "Gabry Ponte",
+      "song": "Tutta l'Italia",
+      "runningOrder": 11,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "al-2025",
+      "country": "Albania",
+      "artist": "Shkodra Elektronike",
+      "song": "Zjerm",
+      "runningOrder": 12,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "nl-2025",
+      "country": "Netherlands",
+      "artist": "Claude",
+      "song": "C'est la vie",
+      "runningOrder": 13,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "hr-2025",
+      "country": "Croatia",
+      "artist": "Marko Bošnjak",
+      "song": "Poison Cake",
+      "runningOrder": 14,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "cy-2025",
+      "country": "Cyprus",
+      "artist": "Theo Evan",
+      "song": "Shh",
+      "runningOrder": 15,
+      "eventType": "semifinal1"
+    },
+    {
+      "id": "au-2025",
+      "country": "Australia",
+      "artist": "Go-Jo",
+      "song": "Milkshake Man",
+      "runningOrder": 1,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "me-2025",
+      "country": "Montenegro",
+      "artist": "Nina Žižić",
+      "song": "Dobrodošli",
+      "runningOrder": 2,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "ie-2025",
+      "country": "Ireland",
+      "artist": "EMMY",
+      "song": "Laika Party",
+      "runningOrder": 3,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "lv-2025",
+      "country": "Latvia",
+      "artist": "Tautumeitas",
+      "song": "Bur man laimi",
+      "runningOrder": 4,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "am-2025",
+      "country": "Armenia",
+      "artist": "PARG",
+      "song": "Survivor",
+      "runningOrder": 5,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "at-2025",
+      "country": "Austria",
+      "artist": "JJ",
+      "song": "Wasted Love",
+      "runningOrder": 6,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "gr-2025",
+      "country": "Greece",
+      "artist": "Klavdia",
+      "song": "Asteromáta",
+      "runningOrder": 7,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "lt-2025",
+      "country": "Lithuania",
+      "artist": "Katarsis",
+      "song": "Tavo akys",
+      "runningOrder": 8,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "mt-2025",
+      "country": "Malta",
+      "artist": "Miriana Conte",
+      "song": "Serving",
+      "runningOrder": 9,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "ge-2025",
+      "country": "Georgia",
+      "artist": "Mariam Shengelia",
+      "song": "Freedom",
+      "runningOrder": 10,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "dk-2025",
+      "country": "Denmark",
+      "artist": "Sissal",
+      "song": "Hallucination",
+      "runningOrder": 11,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "cz-2025",
+      "country": "Czechia",
+      "artist": "ADONXS",
+      "song": "Kiss Kiss Goodbye",
+      "runningOrder": 12,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "lu-2025",
+      "country": "Luxembourg",
+      "artist": "Laura Thorn",
+      "song": "La poupée monte le son",
+      "runningOrder": 13,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "il-2025",
+      "country": "Israel",
+      "artist": "Yuval Raphael",
+      "song": "New Day Will Rise",
+      "runningOrder": 14,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "rs-2025",
+      "country": "Serbia",
+      "artist": "Princ",
+      "song": "Mila",
+      "runningOrder": 15,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "fi-2025",
+      "country": "Finland",
+      "artist": "Erika Vikman",
+      "song": "Ich komme",
+      "runningOrder": 16,
+      "eventType": "semifinal2"
+    },
+    {
+      "id": "no-2025-gf",
+      "country": "Norway",
+      "artist": "Kyle Alessandro",
+      "song": "Lighter",
+      "runningOrder": 1,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "lu-2025-gf",
+      "country": "Luxembourg",
+      "artist": "Laura Thorn",
+      "song": "La poupée monte le son",
+      "runningOrder": 2,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "ee-2025-gf",
+      "country": "Estonia",
+      "artist": "Tommy Cash",
+      "song": "Espresso Macchiato",
+      "runningOrder": 3,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "il-2025-gf",
+      "country": "Israel",
+      "artist": "Yuval Raphael",
+      "song": "New Day Will Rise",
+      "runningOrder": 4,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "lt-2025-gf",
+      "country": "Lithuania",
+      "artist": "Katarsis",
+      "song": "Tavo akys",
+      "runningOrder": 5,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "es-2025",
+      "country": "Spain",
+      "artist": "Melody",
+      "song": "Esa diva",
+      "runningOrder": 6,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "ua-2025-gf",
+      "country": "Ukraine",
+      "artist": "Ziferblat",
+      "song": "Bird of Pray",
+      "runningOrder": 7,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "gb-2025",
+      "country": "United Kingdom",
+      "artist": "Remember Monday",
+      "song": "What The Hell Just Happened?",
+      "runningOrder": 8,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "at-2025-gf",
+      "country": "Austria",
+      "artist": "JJ",
+      "song": "Wasted Love",
+      "runningOrder": 9,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "is-2025-gf",
+      "country": "Iceland",
+      "artist": "VÆB",
+      "song": "Róa",
+      "runningOrder": 10,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "lv-2025-gf",
+      "country": "Latvia",
+      "artist": "Tautumeitas",
+      "song": "Bur man laimi",
+      "runningOrder": 11,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "nl-2025-gf",
+      "country": "Netherlands",
+      "artist": "Claude",
+      "song": "C'est la vie",
+      "runningOrder": 12,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "fi-2025-gf",
+      "country": "Finland",
+      "artist": "Erika Vikman",
+      "song": "Ich komme",
+      "runningOrder": 13,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "it-2025",
+      "country": "Italy",
+      "artist": "Lucio Corsi",
+      "song": "Volevo essere un duro",
+      "runningOrder": 14,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "pl-2025-gf",
+      "country": "Poland",
+      "artist": "Justyna Steczkowska",
+      "song": "Gaja",
+      "runningOrder": 15,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "de-2025",
+      "country": "Germany",
+      "artist": "Abor & Tynna",
+      "song": "Baller",
+      "runningOrder": 16,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "gr-2025-gf",
+      "country": "Greece",
+      "artist": "Klavdia",
+      "song": "Asteromáta",
+      "runningOrder": 17,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "am-2025-gf",
+      "country": "Armenia",
+      "artist": "PARG",
+      "song": "Survivor",
+      "runningOrder": 18,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "ch-2025",
+      "country": "Switzerland",
+      "artist": "Zoë Më",
+      "song": "Voyage",
+      "runningOrder": 19,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "mt-2025-gf",
+      "country": "Malta",
+      "artist": "Miriana Conte",
+      "song": "Serving",
+      "runningOrder": 20,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "pt-2025-gf",
+      "country": "Portugal",
+      "artist": "NAPA",
+      "song": "Deslocado",
+      "runningOrder": 21,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "dk-2025-gf",
+      "country": "Denmark",
+      "artist": "Sissal",
+      "song": "Hallucination",
+      "runningOrder": 22,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "se-2025-gf",
+      "country": "Sweden",
+      "artist": "KAJ",
+      "song": "Bara bada bastu",
+      "runningOrder": 23,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "fr-2025",
+      "country": "France",
+      "artist": "Louane",
+      "song": "Maman",
+      "runningOrder": 24,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "sm-2025-gf",
+      "country": "San Marino",
+      "artist": "Gabry Ponte",
+      "song": "Tutta l'Italia",
+      "runningOrder": 25,
+      "eventType": "grandfinal"
+    },
+    {
+      "id": "al-2025-gf",
+      "country": "Albania",
+      "artist": "Shkodra Elektronike",
+      "song": "Zjerm",
+      "runningOrder": 26,
+      "eventType": "grandfinal"
+    }
+  ]
+}
