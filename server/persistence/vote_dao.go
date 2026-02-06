@@ -13,6 +13,7 @@ type VoteDAO interface {
 	Create(ctx context.Context, vote *models.Vote) error
 	GetByGuestAndParty(ctx context.Context, guestID, partyID string) (*models.Vote, error)
 	Update(ctx context.Context, vote *models.Vote) error
+	ListByPartyID(ctx context.Context, partyID string) ([]*models.Vote, error)
 }
 
 // FirestoreVoteDAO is the Firestore implementation of VoteDAO.
@@ -56,4 +57,26 @@ func (d *FirestoreVoteDAO) GetByGuestAndParty(ctx context.Context, guestID, part
 func (d *FirestoreVoteDAO) Update(ctx context.Context, vote *models.Vote) error {
 	_, err := d.client.Collection(votesCollection).Doc(vote.ID).Set(ctx, vote)
 	return err
+}
+
+// ListByPartyID retrieves all votes for a given party.
+func (d *FirestoreVoteDAO) ListByPartyID(ctx context.Context, partyID string) ([]*models.Vote, error) {
+	iter := d.client.Collection(votesCollection).Where("partyId", "==", partyID).Documents(ctx)
+	defer iter.Stop()
+
+	docs, err := iter.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	votes := make([]*models.Vote, 0, len(docs))
+	for _, doc := range docs {
+		var vote models.Vote
+		if err := doc.DataTo(&vote); err != nil {
+			return nil, err
+		}
+		votes = append(votes, &vote)
+	}
+
+	return votes, nil
 }

@@ -45,7 +45,7 @@ func main() {
 		segments := strings.SplitN(path, "/", 3)
 		if len(segments) >= 2 {
 			switch segments[1] {
-			case "votes":
+			case "votes", "end-voting", "results":
 				voteHandler.ServeHTTP(w, r)
 				return
 			}

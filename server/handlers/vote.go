@@ -17,6 +17,8 @@ type VoteServiceHandler interface {
 	SubmitVote(ctx context.Context, adminID, partyID string, req services.SubmitVoteRequest) (*models.Vote, error)
 	GetVotes(ctx context.Context, adminID, partyID, guestID string) (*models.Vote, error)
 	UpdateVote(ctx context.Context, adminID, partyID string, req services.SubmitVoteRequest) (*models.Vote, error)
+	EndVoting(ctx context.Context, adminID, partyID string) (*models.Party, error)
+	GetResults(ctx context.Context, adminID, partyID string) (*services.PartyResults, error)
 }
 
 // VoteHandler handles HTTP requests for vote management.
@@ -40,27 +42,39 @@ func (h *VoteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := strings.TrimPrefix(r.URL.Path, "/api/parties/")
 	segments := strings.Split(path, "/")
 
-	// segments should be: [partyID, "votes"] or [partyID, "votes", guestID]
-	if len(segments) < 2 || segments[1] != "votes" {
+	if len(segments) < 2 {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		return
 	}
 
 	partyID := segments[0]
 
-	switch len(segments) {
-	case 2: // /api/parties/{partyID}/votes
-		switch r.Method {
-		case http.MethodPost:
-			h.handleSubmitVote(w, r, partyID)
-			return
-		case http.MethodPut:
-			h.handleUpdateVote(w, r, partyID)
+	switch segments[1] {
+	case "votes":
+		switch len(segments) {
+		case 2: // /api/parties/{partyID}/votes
+			switch r.Method {
+			case http.MethodPost:
+				h.handleSubmitVote(w, r, partyID)
+				return
+			case http.MethodPut:
+				h.handleUpdateVote(w, r, partyID)
+				return
+			}
+		case 3: // /api/parties/{partyID}/votes/{guestID}
+			if r.Method == http.MethodGet {
+				h.handleGetVotes(w, r, partyID, segments[2])
+				return
+			}
+		}
+	case "end-voting":
+		if r.Method == http.MethodPost {
+			h.handleEndVoting(w, r, partyID)
 			return
 		}
-	case 3: // /api/parties/{partyID}/votes/{guestID}
+	case "results":
 		if r.Method == http.MethodGet {
-			h.handleGetVotes(w, r, partyID, segments[2])
+			h.handleGetResults(w, r, partyID)
 			return
 		}
 	}
@@ -135,6 +149,39 @@ func (h *VoteHandler) handleUpdateVote(w http.ResponseWriter, r *http.Request, p
 	writeJSON(w, http.StatusOK, vote)
 }
 
+// handleEndVoting handles POST /api/parties/:partyID/end-voting.
+func (h *VoteHandler) handleEndVoting(w http.ResponseWriter, r *http.Request, partyID string) {
+	adminID, _ := middleware.UserIDFromContext(r.Context())
+	if adminID == "" {
+		writeError(w, http.StatusUnauthorized)
+		return
+	}
+
+	party, err := h.service.EndVoting(r.Context(), adminID, partyID)
+	if err != nil {
+		mapVoteError(w, err)
+		return
+	}
+
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"id":     party.ID,
+		"status": party.Status,
+	})
+}
+
+// handleGetResults handles GET /api/parties/:partyID/results.
+func (h *VoteHandler) handleGetResults(w http.ResponseWriter, r *http.Request, partyID string) {
+	adminID, _ := middleware.UserIDFromContext(r.Context())
+
+	results, err := h.service.GetResults(r.Context(), adminID, partyID)
+	if err != nil {
+		mapVoteError(w, err)
+		return
+	}
+
+	writeJSON(w, http.StatusOK, results)
+}
+
 // mapVoteError maps service errors to HTTP status codes.
 func mapVoteError(w http.ResponseWriter, err error) {
 	switch {
@@ -150,6 +197,8 @@ func mapVoteError(w http.ResponseWriter, err error) {
 		writeError(w, http.StatusConflict)
 	case errors.Is(err, services.ErrInvalidVotes):
 		writeError(w, http.StatusBadRequest)
+	case errors.Is(err, services.ErrVotingNotEnded):
+		writeError(w, http.StatusForbidden)
 	default:
 		writeError(w, http.StatusInternalServerError)
 	}

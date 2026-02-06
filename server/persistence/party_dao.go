@@ -18,6 +18,7 @@ type PartyDAO interface {
 	ListByAdminID(ctx context.Context, adminID string) ([]*models.Party, error)
 	Delete(ctx context.Context, id string) error
 	CodeExists(ctx context.Context, code string) (bool, error)
+	UpdateStatus(ctx context.Context, id string, status models.PartyStatus) error
 }
 
 // FirestorePartyDAO is the Firestore implementation of PartyDAO.
@@ -117,6 +118,20 @@ func (d *FirestorePartyDAO) Delete(ctx context.Context, id string) error {
 	}
 
 	_, err = d.client.Collection(partiesCollection).Doc(id).Delete(ctx)
+	return err
+}
+
+// UpdateStatus updates the status of a party.
+// Returns ErrNotFound if the party does not exist.
+func (d *FirestorePartyDAO) UpdateStatus(ctx context.Context, id string, status models.PartyStatus) error {
+	_, err := d.GetByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	_, err = d.client.Collection(partiesCollection).Doc(id).Set(ctx, map[string]interface{}{
+		"status": status,
+	}, firestore.MergeAll)
 	return err
 }
 
