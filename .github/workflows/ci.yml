@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: server/go.mod
+
+      - name: Run unit tests
+        run: go test ./...
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: server/go.mod
+
+      - name: Start Firestore emulator
+        run: docker compose up --build -d firestore
+
+      - name: Wait for emulator readiness
+        run: |
+          for i in $(seq 1 30); do
+            if curl -s http://localhost:8081 > /dev/null 2>&1; then
+              echo "Firestore emulator is ready"
+              exit 0
+            fi
+            echo "Waiting for emulator... (attempt $i/30)"
+            sleep 2
+          done
+          echo "Firestore emulator failed to start"
+          exit 1
+
+      - name: Run integration tests
+        working-directory: server
+        env:
+          FIRESTORE_EMULATOR_HOST: localhost:8081
+        run: go test -tags integration -v -count=1 ./integration/
+
+      - name: Stop emulator
+        if: always()
+        run: docker compose down
