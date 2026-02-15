@@ -161,6 +161,7 @@ export function isVoteComplete(votes: VoteFormData): votes is Record<EurovisionP
 4. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - Types compile without errors
 - Types match server response structure
 - Type guards work correctly

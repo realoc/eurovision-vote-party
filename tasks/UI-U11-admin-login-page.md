@@ -190,6 +190,7 @@ function getErrorMessage(error: unknown): string {
 6. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - Email/password login works
 - Google login works
 - Error messages display correctly

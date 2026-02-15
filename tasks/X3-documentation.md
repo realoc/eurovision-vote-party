@@ -306,6 +306,7 @@ ui/
 Documentation is created as the final task, summarizing all implemented features.
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - README provides clear setup instructions
 - API docs match implemented endpoints
 - Local dev guide is accurate

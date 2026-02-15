@@ -183,6 +183,7 @@ export class ApiError extends Error {
 4. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - API calls include correct headers
 - Auth token injected for authenticated requests
 - Error handling works

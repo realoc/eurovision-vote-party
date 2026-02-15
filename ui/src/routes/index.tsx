@@ -10,8 +10,8 @@ import ProfileSetupPage from '../pages/admin/ProfileSetupPage';
 import EntryPage from '../pages/guest/EntryPage';
 import PartyOverviewPage from '../pages/guest/PartyOverviewPage';
 import ResultsPage from '../pages/guest/ResultsPage';
-import WaitingPage from '../pages/guest/WaitingPage';
 import VotingPage from '../pages/guest/VotingPage';
+import WaitingPage from '../pages/guest/WaitingPage';
 import ProtectedRoute from './ProtectedRoute';
 
 export const routes: RouteObject[] = [

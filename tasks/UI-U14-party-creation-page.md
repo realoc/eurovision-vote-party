@@ -201,6 +201,7 @@ export function CopyButton({ text }: CopyButtonProps) {
 6. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - Form validates party name
 - Event type selector works
 - Creates party successfully

@@ -151,6 +151,7 @@ export function ResultsList({ results }: ResultsListProps) {
 5. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - Shows results sorted by points
 - Top 3 highlighted with medals
 - Shows total voter count

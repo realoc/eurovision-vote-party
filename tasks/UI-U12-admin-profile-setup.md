@@ -134,6 +134,7 @@ export function ProfileSetupPage() {
 6. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - Redirects if profile already exists
 - Validates username format
 - Shows validation errors

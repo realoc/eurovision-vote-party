@@ -1,12 +1,32 @@
 /// <reference types="vitest" />
 
 import { render, screen } from '@testing-library/react';
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
-import App from '../src/App';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { vi } from 'vitest';
 import { AuthContext } from '../src/hooks/useAuth';
 import { routes } from '../src/routes';
 
-function renderWithRouter(initialEntries: string[], authValue = { user: null, loading: false }) {
+vi.mock('../src/config/firebase', () => ({
+	auth: { currentUser: null },
+}));
+
+vi.mock('firebase/auth', () => ({
+	onAuthStateChanged: vi.fn((_auth, callback) => {
+		callback(null);
+		return vi.fn();
+	}),
+	signInWithEmailAndPassword: vi.fn(),
+	signInWithPopup: vi.fn(),
+	signOut: vi.fn(),
+	GoogleAuthProvider: vi.fn(),
+}));
+
+const { default: App } = await import('../src/App');
+
+function renderWithRouter(
+	initialEntries: string[],
+	authValue = { user: null, loading: false },
+) {
 	const router = createMemoryRouter(routes, { initialEntries });
 
 	return render(
@@ -36,13 +56,6 @@ describe('App', () => {
 	});
 
 	it('uses the browser router in the App component', () => {
-		// Rendering App ensures the RouterProvider using the browser history mounts without crashing.
-		expect(() =>
-			render(
-				<AuthContext.Provider value={{ user: null, loading: false }}>
-					<App />
-				</AuthContext.Provider>,
-			),
-		).not.toThrow();
+		expect(() => render(<App />)).not.toThrow();
 	});
 });

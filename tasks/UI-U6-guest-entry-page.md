@@ -123,6 +123,7 @@ Store guest ID in localStorage for polling:
 5. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - Form validates inputs
 - Shows error for invalid party code
 - Navigates to waiting page on success

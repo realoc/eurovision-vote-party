@@ -14,8 +14,8 @@ export function PartyOverviewPage() {
 				</h2>
 			</header>
 			<p className="text-sm text-slate-200">
-				This page will show the current acts, running order, and live scores once
-				the host starts the party.
+				This page will show the current acts, running order, and live scores
+				once the host starts the party.
 			</p>
 		</section>
 	);

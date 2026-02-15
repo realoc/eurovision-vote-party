@@ -131,6 +131,7 @@ export function WaitingPage() {
 6. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - Shows waiting message on load
 - Polls server every 3 seconds
 - Redirects on approval

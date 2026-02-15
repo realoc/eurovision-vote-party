@@ -148,6 +148,7 @@ export function PartyOverviewPage() {
 5. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - Shows party name and event type
 - Lists approved guests
 - Shows vote status per guest

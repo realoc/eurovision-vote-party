@@ -238,6 +238,7 @@ export default defineConfig({
 6. Verify with `pnpm test:integration`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - MSW intercepts all API calls
 - Guest flow test passes
 - Admin flow test passes

@@ -1,6 +1,6 @@
 export function LoadingSpinner() {
 	return (
-		<div
+		<output
 			aria-label="Loading"
 			className="flex items-center justify-center p-6 text-indigo-500"
 		>
@@ -9,6 +9,7 @@ export function LoadingSpinner() {
 				viewBox="0 0 24 24"
 				fill="none"
 				role="img"
+				aria-label="Spinner"
 				xmlns="http://www.w3.org/2000/svg"
 			>
 				<circle
@@ -27,7 +28,7 @@ export function LoadingSpinner() {
 					strokeLinecap="round"
 				/>
 			</svg>
-		</div>
+		</output>
 	);
 }
 

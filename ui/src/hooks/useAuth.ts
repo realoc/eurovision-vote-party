@@ -9,15 +9,18 @@ export type AuthUser = {
 export type AuthContextValue = {
 	user: AuthUser | null;
 	loading: boolean;
+	signInWithEmail?: (email: string, password: string) => Promise<void>;
+	signInWithGoogle?: () => Promise<void>;
+	signOut?: () => Promise<void>;
+	getIdToken?: () => Promise<string | null>;
 };
 
-const defaultAuthContext: AuthContextValue = {
-	user: null,
-	loading: false,
-};
-
-export const AuthContext = createContext<AuthContextValue>(defaultAuthContext);
+export const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function useAuth(): AuthContextValue {
-	return useContext(AuthContext);
+	const context = useContext(AuthContext);
+	if (!context) {
+		throw new Error('useAuth must be used within an AuthProvider');
+	}
+	return context;
 }
