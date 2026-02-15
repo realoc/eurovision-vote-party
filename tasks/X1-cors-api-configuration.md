@@ -134,6 +134,7 @@ FIRESTORE_EMULATOR_HOST=localhost:8081
 5. Verify with `go test ./...`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - CORS headers set correctly in responses
 - Preflight requests handled
 - API calls from UI succeed

@@ -2,8 +2,8 @@
 
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import ProtectedRoute from '../../src/routes/ProtectedRoute';
 import { AuthContext } from '../../src/hooks/useAuth';
+import ProtectedRoute from '../../src/routes/ProtectedRoute';
 
 describe('ProtectedRoute', () => {
 	it('shows a loading spinner while authentication state is loading', () => {

@@ -241,6 +241,7 @@ export function cn(...classes: (string | undefined | null | false)[]): string {
 6. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - All components render correctly
 - Button variants display proper styles
 - Input shows error state

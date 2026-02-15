@@ -19,9 +19,7 @@ export function GuestLayout({ children }: GuestLayoutProps) {
 				</div>
 			</header>
 			<main className="mx-auto flex max-w-5xl flex-1 items-start justify-center px-6 py-10">
-				<div className="w-full">
-					{children ?? <Outlet />}
-				</div>
+				<div className="w-full">{children ?? <Outlet />}</div>
 			</main>
 		</div>
 	);

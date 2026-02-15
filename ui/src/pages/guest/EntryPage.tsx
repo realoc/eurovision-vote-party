@@ -8,8 +8,8 @@ export function EntryPage() {
 				Frontend scaffolding ready to go
 			</h2>
 			<p className="mt-4 text-base leading-7 text-slate-200">
-				Tailwind CSS, Biome, and Vitest are wired up so you can focus on building
-				the guest and admin experiences.
+				Tailwind CSS, Biome, and Vitest are wired up so you can focus on
+				building the guest and admin experiences.
 			</p>
 			<div className="mt-8 flex flex-wrap items-center justify-center gap-4">
 				<a

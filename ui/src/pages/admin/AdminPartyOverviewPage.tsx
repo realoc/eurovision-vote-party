@@ -14,8 +14,8 @@ export function AdminPartyOverviewPage() {
 				</h2>
 			</header>
 			<p className="text-sm text-slate-600">
-				This page will display party details, guest list, and current status once
-				connected to the backend.
+				This page will display party details, guest list, and current status
+				once connected to the backend.
 			</p>
 		</section>
 	);

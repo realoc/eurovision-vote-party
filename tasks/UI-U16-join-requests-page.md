@@ -180,6 +180,7 @@ export function formatTimeAgo(dateString: string): string {
 7. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - Shows list of pending requests
 - Shows "no requests" when empty
 - Approve button works and removes from list

@@ -187,6 +187,7 @@ export function VoteSelect({ points, acts, selectedActId, onChange }: VoteSelect
 6. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - All 10 point values shown
 - Selected acts removed from other dropdowns
 - Button disabled until all selections made

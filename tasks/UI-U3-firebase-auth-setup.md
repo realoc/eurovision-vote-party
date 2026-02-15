@@ -1,17 +1,17 @@
 # U3: Firebase Auth Setup (UI)
 
 ## Status
-- [ ] Not started
+- [x] Completed
 
 ## Dependencies
 - U2 (Routing & Layout)
 
 ## Tasks
-- [ ] Add Firebase SDK
-- [ ] Create auth context/provider
-- [ ] Implement login/logout functionality
-- [ ] Create useAuth hook
-- [ ] Persist auth state
+- [x] Add Firebase SDK
+- [x] Create auth context/provider
+- [x] Implement login/logout functionality
+- [x] Create useAuth hook
+- [x] Persist auth state
 
 ## Details
 

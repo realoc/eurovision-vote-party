@@ -183,6 +183,7 @@ export function PartyCard({ party, onClick, onDelete }: PartyCardProps) {
 6. Verify with `pnpm test`
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - Shows welcome message with username
 - Lists all admin's parties
 - Party cards are clickable

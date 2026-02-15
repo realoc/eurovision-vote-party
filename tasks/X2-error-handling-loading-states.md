@@ -250,6 +250,7 @@ export function useAsync<T>(
 6. Verify with tests
 
 ## Verification
+- `pnpm run lint` passes with zero errors and zero warnings
 - Server returns consistent error format
 - Error boundary catches rendering errors
 - Loading states display correctly
