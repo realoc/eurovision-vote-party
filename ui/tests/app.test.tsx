@@ -42,7 +42,7 @@ describe('App', () => {
 
 		expect(
 			screen.getByRole('heading', {
-				name: /frontend scaffolding ready to go/i,
+				name: /join a party/i,
 			}),
 		).toBeInTheDocument();
 	});
