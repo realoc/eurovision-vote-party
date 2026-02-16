@@ -67,11 +67,13 @@ describe('WaitingPage', () => {
 	let removeItemSpy: ReturnType<typeof vi.spyOn>;
 
 	beforeEach(() => {
-		vi.useFakeTimers();
+		vi.useFakeTimers({ shouldAdvanceTime: true });
 		vi.clearAllMocks();
-		getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(
-			(key: string) => (key === 'guest_ABCDEF' ? 'guest-123' : null),
-		);
+		getItemSpy = vi
+			.spyOn(Storage.prototype, 'getItem')
+			.mockImplementation((key: string) =>
+				key === 'guest_ABCDEF' ? 'guest-123' : null,
+			);
 		removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem');
 		vi.mocked(getGuestStatus).mockResolvedValue(pendingGuest);
 		vi.mocked(getPartyByCode).mockResolvedValue(party);
@@ -111,12 +113,8 @@ describe('WaitingPage', () => {
 		});
 
 		await waitFor(() => {
-			expect(
-				screen.getByText(/you've requested to join/i),
-			).toBeInTheDocument();
-			expect(
-				screen.getByText(/Eurovision Finals/),
-			).toBeInTheDocument();
+			expect(screen.getByText(/you've requested to join/i)).toBeInTheDocument();
+			expect(screen.getByText(/Eurovision Finals/)).toBeInTheDocument();
 		});
 	});
 
