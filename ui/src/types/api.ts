@@ -108,3 +108,12 @@ export type EndVotingResponse = {
 export type StatusOkResponse = {
 	status: string;
 };
+
+// --- Eurovision Scoring ---
+export const EUROVISION_POINTS = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1] as const;
+export type EurovisionPoints = (typeof EUROVISION_POINTS)[number];
+
+// --- Error Response ---
+export type ApiErrorResponse = {
+	error: string;
+};
