@@ -1,15 +1,15 @@
 # U5: Type Definitions
 
 ## Status
-- [ ] Not started
+- [x] Complete
 
 ## Dependencies
 - U1 (Project Setup)
 
 ## Tasks
-- [ ] Define TypeScript types matching server models
-- [ ] Party, Guest, Act, Vote, VoteResult types
-- [ ] API response types
+- [x] Define TypeScript types matching server models
+- [x] Party, Guest, Act, Vote, VoteResult types
+- [x] API response types
 
 ## Details
 
