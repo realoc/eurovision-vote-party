@@ -1,16 +1,16 @@
 # U7: Guest Waiting Page
 
 ## Status
-- [ ] Not started
+- [x] Done
 
 ## Dependencies
 - U6 (Guest Entry Page)
 
 ## Tasks
-- [ ] Display "Waiting for approval" message
-- [ ] Poll server every 3-5 seconds for approval status
-- [ ] Redirect to party overview on approval
-- [ ] Handle rejection (show message, redirect to entry)
+- [x] Display "Waiting for approval" message
+- [x] Poll server every 3-5 seconds for approval status
+- [x] Redirect to party overview on approval
+- [x] Handle rejection (show message, redirect to entry)
 
 ## Details
 

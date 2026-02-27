@@ -1,17 +1,17 @@
 # U8: Party Overview Page (Guest View)
 
 ## Status
-- [ ] Not started
+- [x] Done
 
 ## Dependencies
 - U7 (Guest Waiting Page)
 
 ## Tasks
-- [ ] List of approved guests
-- [ ] List of acts with running order
-- [ ] Display guest's own votes (if submitted)
-- [ ] "Vote" / "Edit Votes" button
-- [ ] Handle voting closed state
+- [x] List of approved guests
+- [x] List of acts with running order
+- [x] Display guest's own votes (if submitted)
+- [x] "Vote" / "Edit Votes" button
+- [x] Handle voting closed state
 
 ## Details
 
