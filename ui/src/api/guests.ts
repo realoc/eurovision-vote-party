@@ -20,6 +20,10 @@ export function listGuests(partyId: string): Promise<Guest[]> {
 	});
 }
 
+export function listApprovedGuests(partyId: string): Promise<Guest[]> {
+	return apiFetch(`/api/parties/${partyId}/guests`);
+}
+
 export function listJoinRequests(partyId: string): Promise<Guest[]> {
 	return apiFetch(`/api/parties/${partyId}/join-requests`, {
 		authenticated: true,

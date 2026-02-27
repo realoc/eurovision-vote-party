@@ -1,18 +1,18 @@
 # U6: Guest Entry Page
 
 ## Status
-- [ ] Not started
+- [x] Done
 
 ## Dependencies
 - U4 (API Client)
 - U5 (Type Definitions)
 
 ## Tasks
-- [ ] Party code input field
-- [ ] Username input field
-- [ ] Submit button
-- [ ] Error handling (invalid code, etc.)
-- [ ] Redirect to waiting page on success
+- [x] Party code input field
+- [x] Username input field
+- [x] Submit button
+- [x] Error handling (invalid code, etc.)
+- [x] Redirect to waiting page on success
 
 ## Details
 
